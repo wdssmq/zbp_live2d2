@@ -1,10 +1,10 @@
-// var home_Path = document.location.protocol +'//' + window.document.location.hostname +'/';
+// const home_Path = document.location.protocol +'//' + window.document.location.hostname +'/';
 
 /* eslint-disable */
 
-var userAgent = window.navigator.userAgent.toLowerCase();
+const userAgent = window.navigator.userAgent.toLowerCase();
 console.log(userAgent);
-var norunAI = [
+const norunAI = [
   "android",
   "iphone",
   "ipod",
@@ -14,9 +14,9 @@ var norunAI = [
   "msie",
   "trident/7.0",
 ];
-var norunFlag = false;
+let norunFlag = false;
 
-for (var i = 0; i < norunAI.length; i++) {
+for (let i = 0; i < norunAI.length; i++) {
   if (userAgent.indexOf(norunAI[i]) > -1) {
     norunFlag = true;
     break;
@@ -28,27 +28,27 @@ if (!window.WebGLRenderingContext) {
 }
 
 if (!norunFlag) {
-  var hitFlag = false;
-  var AIFadeFlag = false;
-  var liveTlakTimer = null;
-  var liveTlakTimerReLoad = null;
-  var sleepTimer_ = null;
-  var AITalkFlag = false;
-  var talkNum = 0;
-  var messageData = null;
+  let hitFlag = false;
+  let AIFadeFlag = false;
+  let liveTlakTimer = null;
+  let liveTlakTimerReLoad = null;
+  let sleepTimer_ = null;
+  let AITalkFlag = false;
+  const talkNum = 0;
+  let messageData = null;
   function randChoice(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
   (function () {
     function renderTip(template, context) {
-      var tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
+      const tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
       return template.replace(tokenReg, function (word, slash1, token, slash2) {
         if (slash1 || slash2) {
           return word.replace("\\", "");
         }
-        var variables = token.replace(/\s/g, "").split(".");
-        var currentObject = context;
-        var i, length, variable;
+        const variables = token.replace(/\s/g, "").split(".");
+        const currentObject = context;
+        let i, length, variable;
         for (i = 0, length = variables.length; i < length; ++i) {
           variable = variables[i];
           currentObject = currentObject[variable];
@@ -62,7 +62,7 @@ if (!norunFlag) {
       return renderTip(this, context);
     };
 
-    var re = /x/;
+    const re = /x/;
     re.toString = function () {
       showMessage("哈哈，你打开了控制台，是想要看看我的秘密吗？", 5000);
       return "";
@@ -81,7 +81,7 @@ if (!norunFlag) {
           messageData = result;
           $.each(result.mouseover, function (index, tips) {
             $(tips.selector).mouseover(function () {
-              var text = Array.isArray(tips.text)
+              let text = Array.isArray(tips.text)
                 ? randChoice(tips.text)
                 : tips.text;
               text = text.renderTip({ text: this.title || $(this).text(), name: role_Name });
@@ -112,10 +112,10 @@ if (!norunFlag) {
               setTimeout(function () {
                 hitFlag = false;
               }, 8000);
-              var text = Array.isArray(tips.text)
+              let text = Array.isArray(tips.text)
                 ? randChoice(tips.text)
                 : tips.text;
-              text = text.renderTip({ text: $(this).text(), name: model_Name });
+              text = text.renderTip({ text: $(this).text(), name: role_Name });
               showMessage(text, 3000);
             });
           });
@@ -131,15 +131,15 @@ if (!norunFlag) {
     }
     initTips();
 
-    var text;
+    let text;
     if (document.referrer !== "") {
-      var referrer = document.createElement("a");
+      const referrer = document.createElement("a");
       referrer.href = document.referrer;
       text =
         "嗨！来自 <span style=\"color:#0099cc;\">" +
         referrer.hostname +
         "</span> 的朋友！";
-      var domain = referrer.hostname.split(".")[1];
+      const domain = referrer.hostname.split(".")[1];
       if (domain == "baidu") {
         text =
           "嗨！ 来自 百度搜索 的朋友！<br>欢迎访问<span style=\"color:#0099cc;\">「 " +
@@ -159,7 +159,7 @@ if (!norunFlag) {
     } else {
       if (window.location.href == home_Path) {
         // 主页URL判断，需要斜杠结尾
-        var now = new Date().getHours();
+        const now = new Date().getHours();
         if (now > 23 || now <= 5) {
           text = "你是夜猫子呀？这么晚还不睡觉，明天起的来嘛？";
         } else if (now > 5 && now <= 7) {
@@ -219,7 +219,7 @@ if (!norunFlag) {
   }
 
   function checkSleep() {
-    var sleepStatu = sessionStorage.getItem("Sleepy");
+    const sleepStatu = sessionStorage.getItem("Sleepy");
     if (sleepStatu !== "1") {
       talkValTimer();
       showMessage("你回来啦~", 0);
@@ -300,15 +300,15 @@ if (!norunFlag) {
     });
     $("#youduButton").on("click", function () {
       if ($("#youduButton").hasClass("doudong")) {
-        var typeIs = $("#youduButton").attr("data-type");
+        const typeIs = $("#youduButton").attr("data-type");
         $("#youduButton").removeClass("doudong");
         $("html").removeClass(typeIs);
         $("#youduButton").attr("data-type", "");
         // $("#landlord").removeAttr("style").fadeIn();
       } else {
-        var duType = $("#duType").val();
-        var duArr = duType.split(",");
-        var dataType = duArr[Math.floor(Math.random() * duArr.length)];
+        const duType = $("#duType").val();
+        const duArr = duType.split(",");
+        const dataType = duArr[Math.floor(Math.random() * duArr.length)];
 
         $("#youduButton").addClass("doudong");
         $("#youduButton").attr("data-type", dataType);
@@ -320,7 +320,7 @@ if (!norunFlag) {
     });
     if (talkAPI !== "") {
       $("#showInfoBtn").on("click", function () {
-        var live_statu = $("#live_statu_val").val();
+        const live_statu = $("#live_statu_val").val();
         if (live_statu == "0") {
           return;
         } else {
@@ -333,7 +333,7 @@ if (!norunFlag) {
         }
       });
       $("#showTalkBtn").on("click", function () {
-        var live_statu = $("#live_statu_val").val();
+        const live_statu = $("#live_statu_val").val();
         if (live_statu == "1") {
           return;
         } else {
@@ -345,8 +345,8 @@ if (!norunFlag) {
         }
       });
       $("#talk_send").on("click", function () {
-        var info_ = $("#AIuserText").val();
-        var userid_ = $("#AIuserName").val();
+        const info_ = $("#AIuserText").val();
+        const userid_ = $("#AIuserName").val();
         if (info_ == "") {
           showMessage("写点什么吧！", 0);
           return;
@@ -382,14 +382,14 @@ if (!norunFlag) {
       $("#showTalkBtn").hide();
     }
     // 获取音乐信息初始化
-    var bgmListInfo = $("input[name=live2dBGM]");
+    const bgmListInfo = $("input[name=live2dBGM]");
     if (bgmListInfo.length == 0) {
       $("#musicButton").hide();
     } else {
-      var bgmPlayNow = parseInt($("#live2d_bgm").attr("data-bgm"));
-      var bgmPlayTime = 0;
-      var live2dBGM_Num = sessionStorage.getItem("live2dBGM_Num");
-      var live2dBGM_PlayTime = sessionStorage.getItem("live2dBGM_PlayTime");
+      let bgmPlayNow = parseInt($("#live2d_bgm").attr("data-bgm"));
+      let bgmPlayTime = 0;
+      const live2dBGM_Num = sessionStorage.getItem("live2dBGM_Num");
+      const live2dBGM_PlayTime = sessionStorage.getItem("live2dBGM_PlayTime");
       if (live2dBGM_Num) {
         if (live2dBGM_Num <= $("input[name=live2dBGM]").length - 1) {
           bgmPlayNow = parseInt(live2dBGM_Num);
@@ -398,13 +398,13 @@ if (!norunFlag) {
       if (live2dBGM_PlayTime) {
         bgmPlayTime = parseInt(live2dBGM_PlayTime);
       }
-      var live2dBGMSrc = bgmListInfo.eq(bgmPlayNow).val();
+      const live2dBGMSrc = bgmListInfo.eq(bgmPlayNow).val();
       $("#live2d_bgm").attr("data-bgm", bgmPlayNow);
       $("#live2d_bgm").attr("src", live2dBGMSrc);
       $("#live2d_bgm")[0].currentTime = bgmPlayTime;
       $("#live2d_bgm")[0].volume = 0.5;
-      var live2dBGM_IsPlay = sessionStorage.getItem("live2dBGM_IsPlay");
-      var live2dBGM_WindowClose = sessionStorage.getItem(
+      const live2dBGM_IsPlay = sessionStorage.getItem("live2dBGM_IsPlay");
+      const live2dBGM_WindowClose = sessionStorage.getItem(
         "live2dBGM_WindowClose",
       );
       if (live2dBGM_IsPlay == "0" && live2dBGM_WindowClose == "0") {
@@ -433,19 +433,19 @@ if (!norunFlag) {
       document
         .getElementById("live2d_bgm")
         .addEventListener("timeupdate", function () {
-          var live2dBgmPlayTimeNow = document.getElementById("live2d_bgm")
+          const live2dBgmPlayTimeNow = document.getElementById("live2d_bgm")
             .currentTime;
           sessionStorage.setItem("live2dBGM_PlayTime", live2dBgmPlayTimeNow);
         });
       document
         .getElementById("live2d_bgm")
         .addEventListener("ended", function () {
-          var listNow = parseInt($("#live2d_bgm").attr("data-bgm"));
+          const listNow = parseInt($("#live2d_bgm").attr("data-bgm"));
           listNow++;
           if (listNow > $("input[name=live2dBGM]").length - 1) {
             listNow = 0;
           }
-          var listNewSrc = $("input[name=live2dBGM]").eq(listNow).val();
+          const listNewSrc = $("input[name=live2dBGM]").eq(listNow).val();
           sessionStorage.setItem("live2dBGM_Num", listNow);
           $("#live2d_bgm").attr("src", listNewSrc);
           $("#live2d_bgm")[0].play();
@@ -460,13 +460,13 @@ if (!norunFlag) {
         });
     }
     // 获取用户名
-    var live2dUser = sessionStorage.getItem("live2duser");
+    const live2dUser = sessionStorage.getItem("live2duser");
     if (live2dUser !== null) {
       $("#AIuserName").val(live2dUser);
     }
     // 获取位置
-    var landL = localStorage.getItem("historywidth");
-    var landB = localStorage.getItem("historyheight");
+    const landL = localStorage.getItem("historywidth");
+    const landB = localStorage.getItem("historyheight");
     if (landL == null || landB == null) {
       landL = "5px";
       landB = "0px";
@@ -474,20 +474,20 @@ if (!norunFlag) {
     $("#landlord").css("left", landL + "px");
     $("#landlord").css("bottom", landB + "px");
     // 移动
-    var smcc = document.getElementById("landlord");
-    var moveX = 0;
-    var moveY = 0;
-    var moveBottom = 0;
-    var moveLeft = 0;
-    var moveable = false;
-    var docMouseMoveEvent = document.onmousemove;
-    var docMouseUpEvent = document.onmouseup;
+    const smcc = document.getElementById("landlord");
+    let moveX = 0;
+    let moveY = 0;
+    let moveBottom = 0;
+    let moveLeft = 0;
+    let moveable = false;
+    const docMouseMoveEvent = document.onmousemove;
+    const docMouseUpEvent = document.onmouseup;
     smcc.onmousedown = function (e) {
-      var ent = e || window.event;
+      const ent = e || window.event;
       moveable = true;
       moveX = ent.clientX;
       moveY = ent.clientY;
-      var obj = smcc;
+      const obj = smcc;
       moveBottom = parseInt(obj.style.bottom);
       moveLeft = parseInt(obj.style.left);
       if ((isFirefox = navigator.userAgent.indexOf("Firefox") > 0)) {
@@ -495,17 +495,17 @@ if (!norunFlag) {
       }
       document.onmousemove = function (e) {
         if (moveable) {
-          var ent = e || window.event;
-          var x = moveLeft + ent.clientX - moveX;
-          var y = moveBottom + (moveY - ent.clientY);
+          const ent = e || window.event;
+          const x = moveLeft + ent.clientX - moveX;
+          const y = moveBottom + (moveY - ent.clientY);
           obj.style.left = x + "px";
           obj.style.bottom = y + "px";
         }
       };
       document.onmouseup = function () {
         if (moveable) {
-          var historywidth = obj.style.left;
-          var historyheight = obj.style.bottom;
+          let historywidth = obj.style.left;
+          let historyheight = obj.style.bottom;
           historywidth = historywidth.replace("px", "");
           historyheight = historyheight.replace("px", "");
           localStorage.setItem("historywidth", historywidth);
@@ -522,17 +522,17 @@ if (!norunFlag) {
     };
   }
   $(document).ready(function () {
-    var AIimgSrc = model_textures;
-    var images = [];
-    var imgLength = AIimgSrc.length;
-    var loadingNum = 0;
-    for (var i = 0; i < imgLength; i++) {
+    const AIimgSrc = model_textures;
+    let images = [];
+    const imgLength = AIimgSrc.length;
+    let loadingNum = 0;
+    for (let i = 0; i < imgLength; i++) {
       images[i] = new Image();
       images[i].src = model_Path + AIimgSrc[i];
       images[i].onload = function () {
         loadingNum++;
         if (loadingNum === imgLength) {
-          var live2dhidden = localStorage.getItem("live2dhidden");
+          const live2dhidden = localStorage.getItem("live2dhidden");
           if (live2dhidden === "0") {
             setTimeout(function () {
               $("#open_live2d").fadeIn(200);
