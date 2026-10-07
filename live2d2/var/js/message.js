@@ -84,7 +84,7 @@ if (!norunFlag) {
               var text = Array.isArray(tips.text)
                 ? randChoice(tips.text)
                 : tips.text;
-              text = text.renderTip({ text: this.title || $(this).text() });
+              text = text.renderTip({ text: this.title || $(this).text(), name: model_Name });
               showMessage(text, 3000);
               talkValTimer();
               clearInterval(liveTlakTimer);
@@ -115,7 +115,7 @@ if (!norunFlag) {
               var text = Array.isArray(tips.text)
                 ? randChoice(tips.text)
                 : tips.text;
-              text = text.renderTip({ text: $(this).text() });
+              text = text.renderTip({ text: $(this).text(), name: model_Name });
               showMessage(text, 3000);
             });
           });
