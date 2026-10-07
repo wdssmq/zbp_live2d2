@@ -35,6 +35,10 @@ if (!norunFlag) {
   var sleepTimer_ = null;
   var AITalkFlag = false;
   var talkNum = 0;
+  var messageData = null;
+  function randChoice(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
   (function () {
     function renderTip(template, context) {
       var tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
@@ -74,14 +78,12 @@ if (!norunFlag) {
         url: message_Path + "message.json",
         dataType: "json",
         success: function (result) {
+          messageData = result;
           $.each(result.mouseover, function (index, tips) {
             $(tips.selector).mouseover(function () {
-              var text = tips.text;
-              if (Array.isArray(tips.text))
-                text =
-                  tips.text[
-                    Math.floor(Math.random() * tips.text.length + 1) - 1
-                  ];
+              var text = Array.isArray(tips.text)
+                ? randChoice(tips.text)
+                : tips.text;
               text = text.renderTip({ text: this.title || $(this).text() });
               showMessage(text, 3000);
               talkValTimer();
@@ -110,23 +112,20 @@ if (!norunFlag) {
               setTimeout(function () {
                 hitFlag = false;
               }, 8000);
-              var text = tips.text;
-              if (Array.isArray(tips.text))
-                text =
-                  tips.text[
-                    Math.floor(Math.random() * tips.text.length + 1) - 1
-                  ];
+              var text = Array.isArray(tips.text)
+                ? randChoice(tips.text)
+                : tips.text;
               text = text.renderTip({ text: $(this).text() });
               showMessage(text, 3000);
             });
-            clearInterval(liveTlakTimer);
-            liveTlakTimer = null;
-            if (liveTlakTimer == null) {
-              liveTlakTimer = window.setInterval(function () {
-                showHitokoto();
-              }, 15000);
-            }
           });
+          clearInterval(liveTlakTimer);
+          liveTlakTimer = null;
+          if (liveTlakTimer == null) {
+            liveTlakTimer = window.setInterval(function () {
+              showHitokoto();
+            }, 15000);
+          }
         },
       });
     }
@@ -190,6 +189,7 @@ if (!norunFlag) {
     showMessage(text, 12000);
   })();
 
+  // Todo: 重复定义
   liveTlakTimer = setInterval(function () {
     showHitokoto();
   }, 15000);
@@ -197,9 +197,14 @@ if (!norunFlag) {
   function showHitokoto() {
     if (sessionStorage.getItem("Sleepy") !== "1") {
       if (!AITalkFlag) {
-        $.getJSON("https://v1.hitokoto.cn/", function (result) {
+        $.getJSON("//v1.hitokoto.cn/", function (result) {
           talkValTimer();
           showMessage(result.hitokoto, 0);
+        }).fail(function () {
+          talkValTimer();
+          if (messageData && messageData.click && messageData.click[0]) {
+            showMessage(messageData.click[0].text, 0);
+          }
         });
       }
     } else {
@@ -224,8 +229,7 @@ if (!norunFlag) {
   }
 
   function showMessage(text, timeout = 5000) {
-    if (Array.isArray(text))
-      text = text[Math.floor(Math.random() * text.length + 1) - 1];
+    if (Array.isArray(text)) text = randChoice(text);
     // console.log('showMessage', text);
     if ($(".message").hasClass("ing")) {
       return;
@@ -420,12 +424,12 @@ if (!norunFlag) {
           showMessage("音乐加载中，请稍侯", 0);
         }
       });
-      window.onbeforeunload = function () {
+      window.addEventListener("beforeunload", function () {
         sessionStorage.setItem("live2dBGM_WindowClose", "0");
         if ($("#musicButton").hasClass("play")) {
           sessionStorage.setItem("live2dBGM_IsPlay", "0");
         }
-      };
+      });
       document
         .getElementById("live2d_bgm")
         .addEventListener("timeupdate", function () {
@@ -461,8 +465,8 @@ if (!norunFlag) {
       $("#AIuserName").val(live2dUser);
     }
     // 获取位置
-    var landL = sessionStorage.getItem("historywidth");
-    var landB = sessionStorage.getItem("historyheight");
+    var landL = localStorage.getItem("historywidth");
+    var landB = localStorage.getItem("historyheight");
     if (landL == null || landB == null) {
       landL = "5px";
       landB = "0px";
@@ -470,9 +474,6 @@ if (!norunFlag) {
     $("#landlord").css("left", landL + "px");
     $("#landlord").css("bottom", landB + "px");
     // 移动
-    function getEvent() {
-      return window.event || arguments.callee.caller.arguments[0];
-    }
     var smcc = document.getElementById("landlord");
     var moveX = 0;
     var moveY = 0;
@@ -481,8 +482,8 @@ if (!norunFlag) {
     var moveable = false;
     var docMouseMoveEvent = document.onmousemove;
     var docMouseUpEvent = document.onmouseup;
-    smcc.onmousedown = function () {
-      var ent = getEvent();
+    smcc.onmousedown = function (e) {
+      var ent = e || window.event;
       moveable = true;
       moveX = ent.clientX;
       moveY = ent.clientY;
@@ -492,9 +493,9 @@ if (!norunFlag) {
       if ((isFirefox = navigator.userAgent.indexOf("Firefox") > 0)) {
         window.getSelection().removeAllRanges();
       }
-      document.onmousemove = function () {
+      document.onmousemove = function (e) {
         if (moveable) {
-          var ent = getEvent();
+          var ent = e || window.event;
           var x = moveLeft + ent.clientX - moveX;
           var y = moveBottom + (moveY - ent.clientY);
           obj.style.left = x + "px";
@@ -507,8 +508,8 @@ if (!norunFlag) {
           var historyheight = obj.style.bottom;
           historywidth = historywidth.replace("px", "");
           historyheight = historyheight.replace("px", "");
-          sessionStorage.setItem("historywidth", historywidth);
-          sessionStorage.setItem("historyheight", historyheight);
+          localStorage.setItem("historywidth", historywidth);
+          localStorage.setItem("historyheight", historyheight);
           document.onmousemove = docMouseMoveEvent;
           document.onmouseup = docMouseUpEvent;
           moveable = false;
