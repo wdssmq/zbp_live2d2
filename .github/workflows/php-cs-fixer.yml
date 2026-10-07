@@ -2,6 +2,8 @@ name: php-cs-fixer
 
 on:
   push:
+    branches:
+      - '**'
 
 permissions:
   contents: write
