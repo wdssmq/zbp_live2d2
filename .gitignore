@@ -1,4 +1,5 @@
-usr
-cache
-*.code-workspace
+.codebuddy
 .history
+*.code-workspace
+cache
+usr
