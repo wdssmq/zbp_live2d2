@@ -1,55 +1,60 @@
 <?php
 require '../../../zb_system/function/c_system_base.php';
+
 require '../../../zb_system/function/c_system_admin.php';
 $zbp->Load();
 $action = 'root';
 if (!$zbp->CheckRights($action)) {
-  $zbp->ShowError(6);
-  die();
+    $zbp->ShowError(6);
+
+    exit();
 }
 if (!$zbp->CheckPlugin('live2d2')) {
-  $zbp->ShowError(48);
-  die();
+    $zbp->ShowError(48);
+
+    exit();
 }
 
 $blogtitle = '看板娘';
+
 require $blogpath . 'zb_system/admin/admin_header.php';
+
 require $blogpath . 'zb_system/admin/admin_top.php';
 
 $act = GetVars('act', 'GET');
 $suc = GetVars('suc', 'GET');
 
-if (GetVars('act', 'GET') == 'save') {
-  CheckIsRefererValid();
-  foreach ($_POST as $key => $val) {
-    if (!in_array($key, ['model', 'music'])) {
-        continue;
+if ('save' == GetVars('act', 'GET')) {
+    CheckIsRefererValid();
+    foreach ($_POST as $key => $val) {
+        if (!in_array($key, ['model', 'music'])) {
+            continue;
+        }
+        // $_POST[$key] = trim($val);
+        $zbp->Config('Live2D2')->{$key} = trim($val);
     }
-    // $_POST[$key] = trim($val);
-    $zbp->Config('Live2D2')->$key = trim($val);
-  }
-  // 保存侧校验：模型不存在时回退默认，避免写入无效模型
-  $models = live2d2_ModelList();
-  $model = $zbp->Config('Live2D2')->model;
-  if ($model === null || !isset($models[$model])) {
-    $zbp->Config('Live2D2')->model = live2d2_DefaultModel($models);
-  }
-  $zbp->SaveConfig('Live2D2');
-  $zbp->SetHint('good');
-  Redirect('./main.php' . ($suc === null ? '' : "?act=$suc"));
+    // 保存侧校验：模型不存在时回退默认，避免写入无效模型
+    $models = live2d2_ModelList();
+    $model = $zbp->Config('Live2D2')->model;
+    if (null === $model || !isset($models[$model])) {
+        $zbp->Config('Live2D2')->model = live2d2_DefaultModel($models);
+    }
+    $zbp->SaveConfig('Live2D2');
+    $zbp->SetHint('good');
+    Redirect('./main.php' . (null === $suc ? '' : "?act={$suc}"));
 } else {
-  InstallPlugin_live2d2();
+    InstallPlugin_live2d2();
 }
 
 // 自动识别可用模型：var/model 内置 + usr/model 用户自放（同名时用户模型覆盖内置）
 $models = live2d2_ModelList();
-$modelOptions = array();
+$modelOptions = [];
 foreach ($models as $name => $type) {
-  $modelOptions[$name] = htmlspecialchars($name) . ('usr' === $type ? '（用户）' : '（内置）');
+    $modelOptions[$name] = htmlspecialchars($name) . ('usr' === $type ? '（用户）' : '（内置）');
 }
 $modelCurrent = $zbp->Config('Live2D2')->model;
-if ($modelCurrent === null || !isset($models[$modelCurrent])) {
-  $modelCurrent = live2d2_DefaultModel($models);
+if (null === $modelCurrent || !isset($models[$modelCurrent])) {
+    $modelCurrent = live2d2_DefaultModel($models);
 }
 $modelsHint = count($models) > 0
   ? '已识别 ' . count($models) . ' 个模型：' . implode('、', array_keys($models))
@@ -59,10 +64,10 @@ $modelsHint = count($models) > 0
   <div class="divHeader"><?php echo $blogtitle; ?> <small><a href="main.php" title="刷新">刷新</a></small></div>
   <div class="SubMenu">
     <a href="main.php" title="首页"><span class="m-left m-now">首页</span></a>
-    <?php require_once "about.php"; ?>
+    <?php require_once 'about.php'; ?>
   </div>
   <div id="divMain2">
-    <form action="<?php echo BuildSafeURL("main.php?act=save"); ?>" method="post">
+    <form action="<?php echo BuildSafeURL('main.php?act=save'); ?>" method="post">
       <table width="100%" class="tableBorder">
         <tr>
           <th width="10%">项目</th>
@@ -76,7 +81,7 @@ $modelsHint = count($models) > 0
         </tr>
         <tr>
           <td>音乐</td>
-          <td><?php echo zbpform::text("music", $zbp->Config("Live2D2")->music, "90%"); ?></td>
+          <td><?php echo zbpform::text('music', $zbp->Config('Live2D2')->music, '90%'); ?></td>
           <td></td>
         </tr>
         <tr>
