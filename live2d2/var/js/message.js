@@ -40,21 +40,20 @@ if (!norunFlag) {
     return arr[Math.floor(Math.random() * arr.length)];
   }
   (function () {
+    const TOKEN_REG = /(\\)?\{([^{}\\]+)(\\)?\}/g;
+
     function renderTip(template, context) {
-      const tokenReg = /(\\)?\{([^\{\}\\]+)(\\)?\}/g;
-      return template.replace(tokenReg, function (word, slash1, token, slash2) {
-        if (slash1 || slash2) {
-          return word.replace("\\", "");
+      return template.replace(TOKEN_REG, (match, slash1, token, slash2) => {
+        // 转义处理：\{xxx} 或 {xxx\} 会被还原为字面量
+        if (slash1 || slash2) return match.replace("\\", "");
+
+        // 解析路径并逐级取值
+        let value = context;
+        for (const key of token.replace(/\s/g, "").split(".")) {
+          value = value?.[key];
+          if (value == null) return "";
         }
-        const variables = token.replace(/\s/g, "").split(".");
-        const currentObject = context;
-        let i, length, variable;
-        for (i = 0, length = variables.length; i < length; ++i) {
-          variable = variables[i];
-          currentObject = currentObject[variable];
-          if (currentObject === undefined || currentObject === null) return "";
-        }
-        return currentObject;
+        return value;
       });
     }
 
