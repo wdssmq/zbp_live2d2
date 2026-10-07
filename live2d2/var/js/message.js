@@ -42,16 +42,16 @@ if (!norunFlag) {
   (function () {
     const TOKEN_REG = /(\\)?\{([^{}\\]+)(\\)?\}/g;
 
-    function renderTip(template, context) {
-      return template.replace(TOKEN_REG, (match, slash1, token, slash2) => {
-        // 转义处理：\{xxx} 或 {xxx\} 会被还原为字面量
-        if (slash1 || slash2) return match.replace("\\", "");
+    function renderTip(template, context, fallback = "") {
+      return template.replace(TOKEN_REG, (match, slashBefore, token, slashAfter) => {
+        // 转义处理：\{key\} 或 {key\} 都还原为字面量 {key}
+        if (slashBefore || slashAfter) return match.replace(/\\/g, "");
 
         // 解析路径并逐级取值
         let value = context;
         for (const key of token.replace(/\s/g, "").split(".")) {
           value = value?.[key];
-          if (value == null) return "";
+          if (value == null) return fallback; // null / undefined 都兜底
         }
         return value;
       });
