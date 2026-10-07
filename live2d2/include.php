@@ -18,7 +18,7 @@ function live2d2_GetHTML()
   global $zbp;
 
   $message_Path = $zbp->host . "zb_users/plugin/live2d2/usr/";
-  $model_Name = $zbp->Config('Live2D2')->model;
+  $model_Name = $zbp->Config('Live2D2')->model ?: 'nep';
   $model_Path = $zbp->host . "zb_users/plugin/live2d2/var/model/{$model_Name}/";
   $model_File = $zbp->path . "zb_users/plugin/live2d2/var/model/{$model_Name}/model.json";
   $model_textures = json_decode(file_get_contents($model_File))->textures;
