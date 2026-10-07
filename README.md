@@ -1,4 +1,4 @@
-# Live2D-For-Z-BlogPHP
+# Live2D 看板娘
 
 适用于 Z-BlogPHP 的看板娘插件
 
@@ -20,19 +20,21 @@ RSS 订阅：[https://feed.wdssmq.com/](https://feed.wdssmq.com/ "沉冰浮水�
 
 插件化自：[https://github.com/eeg1412/Live2dHistoire](<https://github.com/eeg1412/Live2dHistoire> "https://github.com/eeg1412/Live2dHistoire")
 
-当前插件源码：[https://github.com/wdssmq/Live2D-For-Z-BlogPHP](<https://github.com/wdssmq/Live2D-For-Z-BlogPHP> "https://github.com/wdssmq/Live2D-For-Z-BlogPHP")
+当前插件源码：[https://github.com/wdssmq/zbp_live2d2](<https://github.com/wdssmq/zbp_live2d2> "https://github.com/wdssmq/zbp_live2d2")
 
 看板娘-伊斯特瓦尔 - Z-Blog 应用中心：[https://app.zblogcn.com/?id=1821](https://app.zblogcn.com/?id=1821 "看板娘-伊斯特瓦尔 - Z-Blog 应用中心")
 
-沿用原项目的两名角色模型并可后台切换；（仍然有不少各种写死的地方还没改 Orz……）
+插件预置两个角色模型；
 
-其他程序可直接使用 var 文件夹，然后引入页面时参考 [live2d2_GetHTML() 函数](https://github.com/wdssmq/Live2D-For-Z-BlogPHP/search?q=live2d2_GetHTML) ；
+启用插件后，可额外放置模型文件到到 `usr/model/` 目录下，然后进后台切换使用；
 
 ## 效果图
 
 ![效果图](https://app-cdn.zblogcn.com/files/phpplugin/live2d2/logo.png)
 
 ## 更新历史
+
+2026-10-08：优化代码细节；支持自行放置模型文件；
 
 2023-06-24：修复启用滤镜效果时的定位错误；「By [kevinstrax (Kevin Deng)](https://github.com/kevinstrax "kevinstrax (Kevin Deng)")」
 
@@ -50,4 +52,6 @@ RSS 订阅：[https://feed.wdssmq.com/](https://feed.wdssmq.com/ "沉冰浮水�
 
 ### 其他
 
-~~梦象：`https://mx-model.ga/` 一个专注分享 Live2D 的站；~~「已失效」
+梦象：`https://mx.paul.ren/` 一个专注分享 Live2D 的站；
+
+右边仓库也有一些适配当前版本的模型：`https://github.com/fghrsh/live2d_api/tree/master/model`；← 「**需要将 `index.json` 改为 `model.json`**」
