@@ -91,11 +91,11 @@ $modelsHint = count($models) > 0
       </table>
     </form>
     ---------
-    <p>注：需要将.moc和.mtn两个后缀的MIME类型设置为：application/octet-stream</p>
+    <p>注：需要将 <code>.moc</code> 和 <code>.mtn</code> 两个后缀的 MIME 类型设置为：<code>application/octet-stream</code></p>
     <p>基于如下代码实现:</p>
     <p>https://github.com/eeg1412/Live2dHistoire</p>
     <p>本项目源码库：</p>
-    <p>https://github.com/wdssmq/Live2D-For-Z-BlogPHP</p>
+    <p>https://github.com/wdssmq/zbp_live2d2</p>
   </div>
 </div>
 
