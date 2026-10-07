@@ -1,5 +1,6 @@
 {
   "version": "1.0.0",
+  "name": "涅普缇努",
   "model": "model.moc",
   "textures": [
     "nep.1024/texture_00.png",

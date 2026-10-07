@@ -1,5 +1,6 @@
 {
   "version": "1.0.0",
+  "name": "伊丝特瓦尔",
   "model": "model.moc",
   "textures": [
     "histoire.1024/texture_00.png",

@@ -65,8 +65,10 @@ function live2d2_GetHTML()
     $model_Type = $models[$model_Name];
     $model_Path = $zbp->host . "zb_users/plugin/live2d2/{$model_Type}/model/{$model_Name}/";
     $model_File = $zbp->path . "zb_users/plugin/live2d2/{$model_Type}/model/{$model_Name}/model.json";
-    $model_textures = json_decode(file_get_contents($model_File))->textures;
-    $model_textures = json_encode($model_textures);
+    $model_Json = json_decode((string) file_get_contents($model_File));
+    $model_textures = isset($model_Json->textures) ? json_encode($model_Json->textures) : '[]';
+    // 角色名：model.json 中声明了 name 时使用，否则回退目录名（不影响路径）
+    $role_Name = (!empty($model_Json->name) && is_string($model_Json->name)) ? $model_Json->name : $model_Name;
 
     $js1 = live2d2_Path('js-live2d', 'host');
     $js2 = live2d2_Path('js-message', 'host');
@@ -84,8 +86,8 @@ function live2d2_GetHTML()
         return '';
     }
     $str = str_replace(
-        ['{$message_Path}', '{$model_Name}', '{$model_Path}', '{$model_textures}', '{$home_Path}', '{$musicHTML}', '{$js1}', '{$js2}'],
-        [$message_Path, $model_Name, $model_Path, $model_textures, $home_Path, $musicHTML, $js1, $js2],
+        ['{$message_Path}', '{$model_Name}', '{$role_Name}', '{$model_Path}', '{$model_textures}', '{$home_Path}', '{$musicHTML}', '{$js1}', '{$js2}'],
+        [$message_Path, $model_Name, $role_Name, $model_Path, $model_textures, $home_Path, $musicHTML, $js1, $js2],
         $str,
     );
 
