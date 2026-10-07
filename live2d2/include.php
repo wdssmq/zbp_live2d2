@@ -23,6 +23,7 @@ function live2d2_ModelList()
     foreach (['var', 'usr'] as $type) {
         $root = $zbp->path . "zb_users/plugin/live2d2/{$type}/model/";
         if (!is_dir($root)) {
+            @mkdir($root);
             continue;
         }
         $files = glob($root . '*/model.json');
