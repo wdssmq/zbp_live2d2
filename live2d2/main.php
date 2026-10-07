@@ -22,8 +22,17 @@ $suc = GetVars('suc', 'GET');
 if (GetVars('act', 'GET') == 'save') {
   CheckIsRefererValid();
   foreach ($_POST as $key => $val) {
+    if (!in_array($key, ['model', 'music'])) {
+        continue;
+    }
     // $_POST[$key] = trim($val);
     $zbp->Config('Live2D2')->$key = trim($val);
+  }
+  // 保存侧校验：模型不存在时回退默认，避免写入无效模型
+  $models = live2d2_ModelList();
+  $model = $zbp->Config('Live2D2')->model;
+  if ($model === null || !isset($models[$model])) {
+    $zbp->Config('Live2D2')->model = live2d2_DefaultModel($models);
   }
   $zbp->SaveConfig('Live2D2');
   $zbp->SetHint('good');
@@ -31,6 +40,20 @@ if (GetVars('act', 'GET') == 'save') {
 } else {
   InstallPlugin_live2d2();
 }
+
+// 自动识别可用模型：var/model 内置 + usr/model 用户自放（同名时用户模型覆盖内置）
+$models = live2d2_ModelList();
+$modelOptions = array();
+foreach ($models as $name => $type) {
+  $modelOptions[$name] = htmlspecialchars($name) . ('usr' === $type ? '（用户）' : '（内置）');
+}
+$modelCurrent = $zbp->Config('Live2D2')->model;
+if ($modelCurrent === null || !isset($models[$modelCurrent])) {
+  $modelCurrent = live2d2_DefaultModel($models);
+}
+$modelsHint = count($models) > 0
+  ? '已识别 ' . count($models) . ' 个模型：' . implode('、', array_keys($models))
+  : '未识别到可用模型，请将模型目录（含 model.json）放入 var/model 或 usr/model';
 ?>
 <div id="divMain">
   <div class="divHeader"><?php echo $blogtitle; ?> <small><a href="main.php" title="刷新">刷新</a></small></div>
@@ -48,8 +71,8 @@ if (GetVars('act', 'GET') == 'save') {
         </tr>
         <tr>
           <td>人物选择</td>
-          <td><?php echo zbpform::select('model', array('histoire' => '伊斯特瓦尔', 'nep' => '涅普迪努'), $zbp->Config("Live2D2")->model); ?></td>
-          <td></td>
+          <td><?php echo zbpform::select('model', $modelOptions, $modelCurrent); ?></td>
+          <td><?php echo $modelsHint; ?></td>
         </tr>
         <tr>
           <td>音乐</td>

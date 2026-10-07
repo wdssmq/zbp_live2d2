@@ -14,14 +14,55 @@ function live2d2_include(&$templates)
     $templates['header'] = str_replace('{$header}', '{$header}' . '<link rel="stylesheet" href="' . live2d2_Path('css', 'host') . '" />', $templates['header']);
     $templates['footer'] = str_replace('{$footer}', '{$footer}' . live2d2_GetHTML(), $templates['footer']);
 }
+
+function live2d2_ModelList()
+{
+    global $zbp;
+    $list = [];
+    // var 内置模型在前，usr 用户自放模型在后（同名时用户模型覆盖内置）
+    foreach (['var', 'usr'] as $type) {
+        $root = $zbp->path . "zb_users/plugin/live2d2/{$type}/model/";
+        if (!is_dir($root)) {
+            continue;
+        }
+        $files = glob($root . '*/model.json');
+        if (!is_array($files)) {
+            continue;
+        }
+        foreach ($files as $file) {
+            $list[basename(dirname($file))] = $type;
+        }
+    }
+
+    return $list;
+}
+
+function live2d2_DefaultModel($list)
+{
+    if (isset($list['histoire'])) {
+        return 'histoire';
+    }
+
+    return count($list) > 0 ? key($list) : '';
+}
+
 function live2d2_GetHTML()
 {
     global $zbp;
 
     $message_Path = $zbp->host . 'zb_users/plugin/live2d2/usr/';
-    $model_Name = $zbp->Config('Live2D2')->model ?: 'nep';
-    $model_Path = $zbp->host . "zb_users/plugin/live2d2/var/model/{$model_Name}/";
-    $model_File = $zbp->path . "zb_users/plugin/live2d2/var/model/{$model_Name}/model.json";
+    $models = live2d2_ModelList();
+    $model_Name = $zbp->Config('Live2D2')->model;
+    if (null === $model_Name || !isset($models[$model_Name])) {
+        // 配置的模型不存在时回退默认模型（读取侧校验）
+        $model_Name = live2d2_DefaultModel($models);
+        if ('' === $model_Name) {
+            return '';
+        }
+    }
+    $model_Type = $models[$model_Name];
+    $model_Path = $zbp->host . "zb_users/plugin/live2d2/{$model_Type}/model/{$model_Name}/";
+    $model_File = $zbp->path . "zb_users/plugin/live2d2/{$model_Type}/model/{$model_Name}/model.json";
     $model_textures = json_decode(file_get_contents($model_File))->textures;
     $model_textures = json_encode($model_textures);
 
@@ -108,7 +149,7 @@ function InstallPlugin_live2d2()
         }
     }
     if (!$zbp->HasConfig('Live2D2') || !$zbp->Config('Live2D2')->HasKey('model')) {
-        $zbp->Config('Live2D2')->model = 'histoire';
+        $zbp->Config('Live2D2')->model = live2d2_DefaultModel(live2d2_ModelList());
         $zbp->SaveConfig('Live2D2');
     }
     $zbp->BuildTemplate();
