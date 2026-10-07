@@ -10,7 +10,7 @@ function ActivePlugin_live2d2()
 function live2d2_include(&$templates)
 {
   // global $zbp;
-  $templates['header'] = str_replace('{$header}', '{$header}' . '<link rel="stylesheet" href="' . live2d2_Path("css", "host") . '" />', $templates['header']);;
+  $templates['header'] = str_replace('{$header}', '{$header}' . '<link rel="stylesheet" href="' . live2d2_Path("css", "host") . '" />', $templates['header']);
   $templates['footer'] = str_replace('{$footer}', '{$footer}' . live2d2_GetHTML(), $templates['footer']);
 }
 function live2d2_GetHTML()
@@ -28,11 +28,11 @@ function live2d2_GetHTML()
   $js2 = live2d2_Path("js-message", "host");
   $music = $zbp->Config("Live2D2")->music;
   if (!empty($music)) {
+    $music = htmlspecialchars($music, ENT_QUOTES);
     $musicHTML = '<audio src="" style="display:none;" id="live2d_bgm" data-bgm="0" preload="none"></audio>';
     $musicHTML .= "<input name=\"live2dBGM\" value=\"{$music}\" type=\"hidden\">";
-  } else { {
+  } else {
       $musicHTML = "";
-    }
   }
   $str = <<<html
 <div id="landlord">
